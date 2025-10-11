@@ -21,6 +21,7 @@ const {
   getGovernorates,
   toggleBlockUser,
   getBlockStatus,
+  toggleFollow,
 } = require("../controllers/userController");
 const {
   registerValidation,
@@ -46,7 +47,7 @@ router.get("/governorates", getGovernorates);
 router.get("/", protectUser, protectAdmin, getUsers);
 router.put("/:id", protectUser, updateUser);
 router.delete("/:id", protectUser, protectAdmin, deleteUser);
-router.get("/:id", protectUser, protectAdmin, getUserById);
+router.get("/:id", getUserById);
 router.patch("/:id", protectUser, protectAdmin, toggleBlockUser);
 router.get("/block-status/:id", protectUser, getBlockStatus);
 
@@ -54,5 +55,7 @@ router.post("/admin/logout", logoutUser);
 
 router.post("/forget-password", forgetPassword);
 router.post("/reset-password/:token", resetPassword);
+// Follow/unfollow a user
+router.post("/:id/follow", protectUser, toggleFollow);
 
 module.exports = router;

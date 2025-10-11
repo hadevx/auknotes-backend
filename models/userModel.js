@@ -41,6 +41,9 @@ const userSchema = new Schema(
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    // New fields for social feature
+    /*  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }], */
   },
   { timestamps: true }
 );

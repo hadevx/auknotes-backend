@@ -196,7 +196,9 @@ const toggleTopicStatus = asyncHandler(async (req, res) => {
 const createComment = asyncHandler(async (req, res) => {
   const { text, parentComment } = req.body;
   const { id: topicId } = req.params;
-
+  if (!req.user) {
+    return res.status(401).json({ message: "You're not logged in." });
+  }
   if (req.user.isBlocked) {
     return res.status(403).json({ message: "You're blocked. Please contact support." });
   }

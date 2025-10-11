@@ -39,6 +39,8 @@ const loginUser = asyncHandler(async (req, res) => {
     phone: user.phone,
     avatar: user.avatar,
     isAdmin: user.isAdmin,
+    followers: user.followers,
+    following: user.following,
     isBlocked: user.isBlocked,
     createdAt: user.createdAt,
   });
@@ -182,7 +184,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const { name, email, phone } = req.body;
+  const { name, email, phone, avatar } = req.body;
 
   const user = await User.findById(req.user._id);
   if (user) {
@@ -192,7 +194,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (user.isAdmin) {
       user.avatar = "/logo.png";
     } else {
-      user.avatar = req.body.avatar !== undefined ? req.body.avatar : user.avatar;
+      user.avatar = avatar;
     }
 
     if (req.body.password) {
@@ -203,7 +205,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       _id: updatedUser._id,
-      username: updatedUser.username, // ✅ still send it back for frontend display
+      username: updatedUser.username,
       createdAt: updatedUser.createdAt,
       name: updatedUser.name,
       email: updatedUser.email,
@@ -500,6 +502,43 @@ const getGovernorates = asyncHandler(async (req, res) => {
   });
 });
 
+const toggleFollow = asyncHandler(async (req, res) => {
+  const targetUserId = req.params.id;
+  const currentUserId = req.user._id; // assuming you have auth middleware
+
+  if (targetUserId.toString() === currentUserId.toString()) {
+    res.status(400);
+    throw new Error("You cannot follow yourself");
+  }
+
+  const targetUser = await User.findById(targetUserId);
+  const currentUser = await User.findById(currentUserId);
+
+  if (!targetUser || !currentUser) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Check if already following
+  const isFollowing = currentUser.following.includes(targetUserId);
+
+  if (isFollowing) {
+    // Unfollow
+    currentUser.following.pull(targetUserId);
+    targetUser.followers.pull(currentUserId);
+    await currentUser.save();
+    await targetUser.save();
+    res.json({ message: `You have unfollowed ${targetUser.username}` });
+  } else {
+    // Follow
+    currentUser.following.push(targetUserId);
+    targetUser.followers.push(currentUserId);
+    await currentUser.save();
+    await targetUser.save();
+    res.json({ message: `You are now following ${targetUser.username}` });
+  }
+});
+
 module.exports = {
   loginUser,
   registerUser,
@@ -524,4 +563,5 @@ module.exports = {
   getGovernorates,
   toggleBlockUser,
   getBlockStatus,
+  toggleFollow,
 };
