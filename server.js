@@ -37,6 +37,7 @@ app.use(
       "http://localhost:3000", //admin
       "http://localhost:5173", //storefront
       "https://auknotes.webschema.online",
+      "https://auknotes-admin.webschema.online",
     ],
     credentials: true,
   })
