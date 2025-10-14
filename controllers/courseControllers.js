@@ -44,7 +44,7 @@ const getCourses = async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
 
   // Optional search
-  const keyword = req.query.keyword ? { name: { $regex: req.query.keyword, $options: "i" } } : {};
+  const keyword = req.query.keyword ? { code: { $regex: req.query.keyword, $options: "i" } } : {};
 
   // Count total matching categories
   const count = await Course.countDocuments({ ...keyword });

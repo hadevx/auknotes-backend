@@ -32,19 +32,21 @@ const getProducts = asyncHandler(async (req, res) => {
 const createProduct = asyncHandler(async (req, res) => {
   const { name, course, file, type } = req.body;
 
-  // ✅ Build product object
-  const product = {
+  const product = await Product.create({
     user: req.user._id,
-    name: name || "x",
+    name: name || "Untitled Resource",
     course,
     type,
-    file, // attach uploaded PDF
-    size: file?.size || 0, // <-- save file size
-  };
+    file,
+    size: file?.size || 0,
+  });
 
-  // ✅ Save to DB
-  const createdProduct = await Product.create(product);
-  res.status(201).json(createdProduct);
+  // ✅ Link product to its course
+  if (course) {
+    await Course.findByIdAndUpdate(course, { $addToSet: { resources: product._id } });
+  }
+
+  res.status(201).json(product);
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
@@ -99,26 +101,18 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
-  if (product) {
-    if (product.image && Array.isArray(product.image)) {
-      for (const img of product.image) {
-        // Delete local file if stored in /uploads/
-        if (img.url && img.url.includes("/uploads/")) {
-          const filename = img.url.split("/uploads/").pop();
-          const filePath = path.join(__dirname, "..", "uploads", filename);
-          fs.unlink(filePath, (err) => {
-            if (err) console.error("Failed to delete local image:", err);
-          });
-        }
-      }
-    }
-
-    await product.deleteOne();
-    res.json({ message: "Product removed" });
-  } else {
+  if (!product) {
     res.status(404);
     throw new Error("Product not found");
   }
+
+  // ✅ Unlink from course before deleting
+  if (product.course) {
+    await Course.findByIdAndUpdate(product.course, { $pull: { resources: product._id } });
+  }
+
+  await product.deleteOne();
+  res.json({ message: "Product removed" });
 });
 
 const getProductsByCourse = asyncHandler(async (req, res) => {
