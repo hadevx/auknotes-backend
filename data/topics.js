@@ -1,6 +1,45 @@
 const topics = [
   // General topics
   {
+    author: "Admin",
+    title: "🎓 Welcome to AUKNOTES Forum",
+    description: `
+    <p>Welcome to the AUKNOTES community! 🎉</p>
+    <p>This forum is a space for AUK students to connect, discuss university life, share notes, and support each other academically and socially.</p>
+    <p>Please keep these guidelines in mind when posting:</p>
+    <ul>
+      <li>✅ Be respectful and considerate — everyone’s here to learn and grow.</li>
+      <li>💬 Keep discussions meaningful and relevant to AUK students.</li>
+      <li>🚫 Avoid spam, promotions, or inappropriate content.</li>
+      <li>📘 Share knowledge, ask questions, and help others when you can.</li>
+    </ul>
+    <p>Let’s build a positive and helpful community together. Welcome aboard! 🌟</p>
+  `,
+    category: "General",
+    isClosed: false,
+    likes: [],
+  },
+  {
+    author: "Admin",
+    title: "👩‍🏫 Discuss Your Professors — Share & Learn Together",
+    description: `
+    <p>Welcome to the <strong>Professor Discussions</strong> section! 🎓</p>
+    <p>This space is for students to share insights about professors — teaching styles, course tips, and classroom experiences — to help others make informed choices.</p>
+    <p>Please follow these simple rules:</p>
+    <ul>
+      <li>✅ Be respectful — share constructive feedback, not personal attacks.</li>
+      <li>💬 Keep discussions factual and related to learning experiences.</li>
+      <li>🚫 No disrespectful, defamatory, or inappropriate comments.</li>
+      <li>📘 Focus on helping fellow students, not gossip or complaints.</li>
+    </ul>
+    <p>Let’s keep this space helpful, respectful, and student-driven. 🌟</p>
+  `,
+    category: "Professor",
+    isClosed: false,
+    likes: [],
+  },
+
+  {
     author: "",
     title: "Best way to prepare for Data Structures exam?",
     description:

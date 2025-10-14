@@ -22,10 +22,10 @@ const productSchema = new Schema(
       required: true,
     },
 
-    category: {
+    course: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Category",
+      ref: "Course",
     },
     description: {
       type: String,

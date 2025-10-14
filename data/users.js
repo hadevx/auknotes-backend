@@ -9,7 +9,7 @@ const users = [
     password: bcrypt.hashSync("123456", 10),
     phone: "00000000",
     isAdmin: true,
-    avatar: "/logo.png",
+    avatar: "/logo.webp",
   },
   {
     username: "johnDoe",

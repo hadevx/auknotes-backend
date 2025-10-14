@@ -1,7 +1,5 @@
 const express = require("express");
 const multer = require("multer");
-const cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
 const path = require("path");
 const fs = require("fs");
 const router = express.Router();
@@ -22,16 +20,22 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+    cb(null, "auknotes" + "-" + file.originalname);
   },
 });
 
 // Only allow PDFs
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
+  const allowedTypes = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ];
+
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF files are allowed"), false);
+    cb(new Error("Only PDF or Word files are allowed"), false);
   }
 };
 

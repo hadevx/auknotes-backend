@@ -3,7 +3,7 @@ const uploadRoutes = require("./uploadRoutes.js");
 const storeRoutes = require("./storeRoutes.js");
 const userRoutes = require("./userRoutes.js");
 const productRoutes = require("./productRoutes.js");
-const categoryRoutes = require("./categoyRoutes.js");
+const courseRoutes = require("./courseRoutes.js");
 const paymentRoutes = require("./paymentRoutes.js");
 const topicRoutes = require("./topicRoutes.js");
 
@@ -13,7 +13,7 @@ module.exports = {
   storeRoutes,
   userRoutes,
   productRoutes,
-  categoryRoutes,
+  courseRoutes,
   paymentRoutes,
   topicRoutes,
 };

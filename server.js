@@ -12,7 +12,7 @@ const {
   orderRoutes,
   uploadRoutes,
   storeRoutes,
-  categoryRoutes,
+  courseRoutes,
   paymentRoutes,
   topicRoutes,
 } = require("./routes/index.js");
@@ -55,7 +55,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/update-store-status", storeRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/category", categoryRoutes);
+app.use("/api/course", courseRoutes);
 app.use("/api/payment", paymentRoutes);
 
 app.use(

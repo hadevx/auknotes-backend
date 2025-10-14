@@ -192,7 +192,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.email = email || user.email;
     user.phone = phone || user.phone;
     if (user.isAdmin) {
-      user.avatar = "/logo.png";
+      user.avatar = "/logo.webp";
     } else {
       user.avatar = avatar;
     }
@@ -256,7 +256,7 @@ const updateAddress = asyncHandler(async (req, res) => {
   res.status(200).json(totalUsers);
 }); */
 const getUsers = asyncHandler(async (req, res) => {
-  const pageSize = 5; // number of users per page
+  const pageSize = 20; // number of users per page
   const page = Number(req.query.pageNumber) || 1;
 
   // Optional search by name or email
