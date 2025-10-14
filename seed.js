@@ -50,9 +50,13 @@ const seedData = async () => {
 
     const x = topics.map((topic, i) => {
       if (i < 2 && adminUser) {
+        // First 2 topics by admin
         return { ...topic, author: adminUser._id };
       } else {
-        return { ...topic, author: createdUsers[(i & (createdUsers.length - 1)) + 1]._id };
+        // Remaining topics assigned round-robin to non-admin users
+        const nonAdminUsers = createdUsers.filter((u) => !u.isAdmin);
+        const user = nonAdminUsers[i % nonAdminUsers.length]; // round-robin safely
+        return { ...topic, author: user._id };
       }
     });
 

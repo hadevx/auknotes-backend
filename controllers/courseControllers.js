@@ -51,7 +51,6 @@ const getCourses = async (req, res) => {
 
   // Fetch paginated categories
   const courses = await Course.find({ ...keyword })
-    .sort({ name: 1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 

@@ -9,16 +9,16 @@ const users = [
     password: bcrypt.hashSync("123456", 10),
     phone: "00000000",
     isAdmin: true,
-    avatar: "/logo.webp",
+    avatar: "logo.webp",
   },
   {
     username: "johnDoe",
     name: "John Doe",
-    email: "john@example.com",
+    email: "hn98q8@hotmail.com",
     password: bcrypt.hashSync("123456", 10),
     phone: "11111111",
     isAdmin: false,
-    avatar: "/1.webp",
+    avatar: "1.webp",
   },
   {
     username: "janeSmith",
@@ -27,7 +27,7 @@ const users = [
     password: bcrypt.hashSync("123456", 10),
     phone: "22222222",
     isAdmin: false,
-    avatar: "/2.webp",
+    avatar: "2.webp",
   },
   {
     username: "mikeBrown",
@@ -36,7 +36,7 @@ const users = [
     password: bcrypt.hashSync("123456", 10),
     phone: "33333333",
     isAdmin: false,
-    avatar: "/3.webp",
+    avatar: "3.webp",
   },
   {
     username: "sarahLee",
@@ -45,7 +45,7 @@ const users = [
     password: bcrypt.hashSync("123456", 10),
     phone: "44444444",
     isAdmin: false,
-    avatar: "/4.webp",
+    avatar: "4.webp",
   },
 ];
 
