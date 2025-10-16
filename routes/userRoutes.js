@@ -22,6 +22,7 @@ const {
   toggleBlockUser,
   getBlockStatus,
   toggleFollow,
+  setVerified,
 } = require("../controllers/userController");
 const {
   registerValidation,
@@ -49,6 +50,7 @@ router.put("/:id", protectUser, updateUser);
 router.delete("/:id", protectUser, protectAdmin, deleteUser);
 router.get("/:id", getUserById);
 router.patch("/:id", protectUser, protectAdmin, toggleBlockUser);
+router.patch("/verify/:id", protectUser, protectAdmin, setVerified);
 router.get("/block-status/:id", protectUser, getBlockStatus);
 
 router.post("/admin/logout", logoutUser);

@@ -12,7 +12,9 @@ const categoryUploadPath = "/app/uploads/categories";
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
-if (!fs.existsSync(categoryUploadPath)) fs.mkdirSync(categoryUploadPath, { recursive: true });
+if (!fs.existsSync(categoryUploadPath)) {
+  fs.mkdirSync(categoryUploadPath, { recursive: true });
+}
 
 // Multer storage config
 const storage = multer.diskStorage({
@@ -24,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// Only allow PDFs
+// Only allow PDFs & DOCs
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "application/pdf",
@@ -41,7 +43,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-// Route: Upload PDF
+// Route: Upload PDF or WORD
 router.post("/", upload.single("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });

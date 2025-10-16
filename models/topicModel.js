@@ -8,6 +8,7 @@ const topicSchema = new mongoose.Schema(
     category: { type: String, required: true },
     isClosed: { type: Boolean, default: false },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     pinned: { type: Boolean, default: false },
   },
   {

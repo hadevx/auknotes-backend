@@ -338,6 +338,24 @@ const toggleBlockUser = asyncHandler(async (req, res) => {
     user,
   });
 });
+const setVerified = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Toggle the current block status
+  user.isVerified = !user.isVerified;
+
+  await user.save();
+
+  res.status(200).json({
+    message: `User ${user.isVerfied ? "Verified" : "unverified"} successfully`,
+    user,
+  });
+});
 const getBlockStatus = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -442,7 +460,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
   For security, this link will expire in 15 minutes.
 
   Best regards,  
-  WEBSCHEMA
+  AUKNOTES
   `
   );
 
@@ -564,4 +582,5 @@ module.exports = {
   toggleBlockUser,
   getBlockStatus,
   toggleFollow,
+  setVerified,
 };

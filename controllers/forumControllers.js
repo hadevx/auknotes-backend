@@ -74,6 +74,7 @@ const getTopics = asyncHandler(async (req, res) => {
               username: 1,
               avatar: 1,
               isAdmin: 1,
+              isVerified: 1,
             },
           },
         ],
@@ -105,11 +106,14 @@ const getTopics = asyncHandler(async (req, res) => {
 const getTopicById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const topic = await Topic.findById(id).populate("author", "name avatar isAdmin username");
+  const topic = await Topic.findById(id).populate(
+    "author",
+    "name avatar isAdmin username isVerified"
+  );
   if (!topic) return res.status(404).json({ message: "Topic not found" });
 
   const comments = await Comment.find({ topic: id })
-    .populate("author", "name avatar isAdmin username")
+    .populate("author", "name avatar isAdmin username isVerified")
     .lean();
 
   res.json({ ...topic.toObject(), comments });
