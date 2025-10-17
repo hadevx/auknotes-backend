@@ -18,6 +18,6 @@ router.put("/:id", protectUser, protectAdmin, updateProduct);
 
 router.delete("/:id", protectUser, protectAdmin, deleteProduct);
 
-router.get("/course/:courseId", getProductsByCourse);
+router.get("/course/:courseId", protectUser, getProductsByCourse);
 
 module.exports = router;
