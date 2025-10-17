@@ -109,7 +109,7 @@ const getProductsByCourse = asyncHandler(async (req, res) => {
   }
 
   // 🚫 Check if the course is closed
-  if (course.isClosed) {
+  if (course.isClosed && !req.user.isAdmin) {
     return res.status(403).json({ message: "This course is not yet available." });
   }
 
