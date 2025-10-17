@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const router = express.Router();
 const sharp = require("sharp");
+const Course = require("../models/courseModel");
 
 // Make sure uploads folder exists inside container
 const uploadPath = "/app/uploads";
@@ -17,13 +18,41 @@ if (!fs.existsSync(categoryUploadPath)) {
 }
 
 // Multer storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+/* const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const course = await Course.findById(req.query.course);
+    console.log(course?.code?.replace(/\s+/g, ""));
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const timestamp = Date.now(); // clean numeric timestamp
     const safeName = file.originalname.replace(/\s+/g, "-"); // replace spaces
+    cb(null, `${timestamp}-${safeName}`);
+  },
+}); */
+/* const getCourse = async(req,res)=>{
+   const course = await Course.findById(req.query.course);
+    console.log(course?.code?.replace(/\s+/g, ""));
+    const formattedCourse = course?.code?.replace(/\s+/g, "");
+    return
+} */
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const course = await Course.findById(req.query.course);
+    console.log(course?.code?.replace(/\s+/g, ""));
+    const formattedCourse = course?.code?.replace(/\s+/g, "");
+    const courseFolder = path.join(uploadPath, formattedCourse);
+
+    if (!fs.existsSync(courseFolder)) {
+      fs.mkdirSync(courseFolder, { recursive: true });
+    }
+
+    cb(null, courseFolder);
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const safeName = file.originalname.replace(/\s+/g, "-");
     cb(null, `${timestamp}-${safeName}`);
   },
 });
@@ -52,7 +81,12 @@ router.post("/", upload.single("file"), async (req, res) => {
   }
 
   try {
-    const fullUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    const course = await Course.findById(req.query.course);
+    console.log(course?.code?.replace(/\s+/g, ""));
+    const formattedCourse = course?.code?.replace(/\s+/g, "");
+    const fullUrl = `${req.protocol}://${req.get("host")}/uploads/${formattedCourse}/${
+      req.file.filename
+    }`;
 
     res.json({
       message: "File uploaded successfully",
