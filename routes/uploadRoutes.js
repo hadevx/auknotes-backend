@@ -22,7 +22,9 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, "auknotes" + "-" + file.originalname);
+    const timestamp = Date.now(); // clean numeric timestamp
+    const safeName = file.originalname.replace(/\s+/g, "-"); // replace spaces
+    cb(null, `${timestamp}-${safeName}`);
   },
 });
 
@@ -53,7 +55,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     const fullUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
     res.json({
-      message: "PDF uploaded successfully",
+      message: "File uploaded successfully",
       file: {
         fileUrl: fullUrl,
         publicId: req.file.filename,
