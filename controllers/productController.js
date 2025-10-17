@@ -50,46 +50,31 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, category, featured, hasDiscount, discountBy } = req.body;
+  const { name, course, type, file } = req.body;
 
   const product = await Product.findById(req.params.id);
-
   if (!product) {
     res.status(404);
     throw new Error("Product not found");
   }
 
-  // Delete old images that are no longer in the new images array
-  if (image && Array.isArray(image)) {
-    const oldImages = product.image || [];
-
-    for (const oldImg of oldImages) {
-      const oldUrl = oldImg.url ? oldImg.url : oldImg;
-      const existsInNew = image.some((img) => (img.url ? img.url : img) === oldUrl);
-
-      if (!existsInNew && oldUrl.includes("/uploads/")) {
-        const filename = oldUrl.split("/uploads/").pop();
-        const filePath = path.join(__dirname, "..", "uploads", filename);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
+  // Update file if a new one was uploaded
+  if (file) {
+    // Delete old file from uploads if exists
+    if (product.file?.url && product.file.url.includes("/uploads/")) {
+      const filename = product.file.url.split("/uploads/").pop();
+      const filePath = path.join(__dirname, "..", "uploads", filename);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     }
 
-    product.image = image; // update product images
+    product.file = file;
+    product.size = file.size || 0;
   }
 
   // Update other fields
   product.name = name ?? product.name;
-  product.price = price ?? product.price;
-  product.description = description ?? product.description;
-  product.category = category ?? product.category;
-  // product.countInStock = countInStock ?? product.countInStock;
-  product.featured = featured ?? product.featured;
-
-  product.hasDiscount = hasDiscount ?? product.hasDiscount;
-  product.discountBy = discountBy ?? product.discountBy;
-  product.discountedPrice = hasDiscount
-    ? product.price - product.price * discountBy
-    : product.price;
+  product.course = course ?? product.course;
+  product.type = type ?? product.type;
 
   const updatedProduct = await product.save();
   res.status(200).json(updatedProduct);
