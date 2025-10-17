@@ -117,16 +117,20 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const getProductsByCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
-  console.log(courseId);
+
   const course = await Course.findById(courseId);
   if (!course) {
     return res.status(404).json({ message: "Course not found" });
   }
 
-  // ✅ Fetch products with pagination, newest first
+  // 🚫 Check if the course is closed
+  if (course.isClosed) {
+    return res.status(403).json({ message: "This course is not yet available." });
+  }
+
+  // ✅ Fetch products only if course is open
   const products = await Product.find({ course: courseId }).sort({ createdAt: -1 });
 
-  // ✅ Return paginated response
   res.status(200).json(products);
 });
 

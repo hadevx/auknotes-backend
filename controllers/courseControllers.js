@@ -22,7 +22,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 // Update
 const updateCourse = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, code, image, isFeatured } = req.body;
+  const { name, code, image, isFeatured, isClosed } = req.body;
 
   const course = await Course.findById(id);
   if (!course) {
@@ -34,6 +34,7 @@ const updateCourse = asyncHandler(async (req, res) => {
   if (code) course.code = code;
   if (image !== undefined) course.image = image;
   if (isFeatured !== undefined) course.isFeatured = isFeatured;
+  if (isClosed !== undefined) course.isClosed = isClosed;
 
   const updatedCourse = await course.save();
   res.json(updatedCourse);
@@ -75,6 +76,10 @@ const getCourseById = asyncHandler(async (req, res) => {
   if (!course) {
     res.status(404);
     throw new Error("Course not found");
+  }
+  // 🚫 Prevent access if closed
+  if (course.isClosed) {
+    return res.status(403).json({ message: "This course is not yet available." });
   }
 
   res.status(200).json(course);
