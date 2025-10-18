@@ -52,6 +52,7 @@ const getCourses = async (req, res) => {
 
   // Fetch paginated categories
   const courses = await Course.find({ ...keyword })
+    .sort({ isClosed: 1, createdAt: -1 }) // show open first, then newest
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
