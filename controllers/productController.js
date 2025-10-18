@@ -108,10 +108,10 @@ const getProductsByCourse = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Course not found" });
   }
 
-  // 🚫 Check if the course is closed
+  /*  // 🚫 Check if the course is closed
   if (course.isClosed && !req.user.isAdmin) {
     return res.status(403).json({ message: "This course is not yet available." });
-  }
+  } */
 
   // ✅ Fetch products only if course is open
   const products = await Product.find({ course: courseId }).sort({ createdAt: -1 });
