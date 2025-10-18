@@ -21,6 +21,10 @@ const courseSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
     isClosed: {
       type: Boolean,
       default: false,

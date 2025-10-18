@@ -77,10 +77,10 @@ const getCourseById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Course not found");
   }
-  // 🚫 Prevent access if closed
+  /*   // 🚫 Prevent access if closed
   if (course.isClosed) {
     return res.status(403).json({ message: "This course is not yet available." });
-  }
+  } */
 
   res.status(200).json(course);
 });
