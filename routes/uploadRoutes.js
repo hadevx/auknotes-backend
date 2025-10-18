@@ -5,7 +5,8 @@ const fs = require("fs");
 const router = express.Router();
 const sharp = require("sharp");
 const Course = require("../models/courseModel");
-
+const Product = require("../models/productModel");
+const { protectUser } = require("../middleware/authMiddleware");
 // Make sure uploads folder exists inside container
 const uploadPath = "/app/uploads";
 const categoryUploadPath = "/app/uploads/categories";
@@ -73,6 +74,29 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
+
+// download a resource
+router.get("/download/:id", protectUser, async (req, res) => {
+  const { id } = req.params;
+
+  const resource = await Product.findById(id).populate("course");
+  if (!resource) return res.status(404).json({ message: "Resource not found" });
+
+  // Check course & resource availability
+  if (resource.course.isClosed) {
+    return res.status(403).json({ message: "This resource is not available yet." });
+  }
+
+  // Serve file
+  const courseFolder = resource.course.code.replace(/\s+/g, "");
+  const fileName = resource.file?.publicId;
+
+  const filePath = path.join("/app/uploads", courseFolder, fileName);
+  console.log(filePath);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ message: "File not found" });
+
+  res.download(filePath);
+});
 
 // Route: Upload PDF or WORD
 router.post("/", upload.single("file"), async (req, res) => {

@@ -61,12 +61,21 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/payment", paymentRoutes);
 
-app.use(
+/* app.use(
   "/uploads",
   express.static("/app/uploads", {
     maxAge: "30d", // browser cache max-age
     etag: true, // enable ETag headers
     setHeaders: (res, path) => {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    },
+  })
+); */
+app.use(
+  "/uploads/categories",
+  express.static("/app/uploads/categories", {
+    maxAge: "30d",
+    setHeaders: (res) => {
       res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
     },
   })
