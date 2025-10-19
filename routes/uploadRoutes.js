@@ -58,18 +58,20 @@ const storage = multer.diskStorage({
   },
 });
 
-// Only allow PDFs & DOCs
+// Only allow PDFs, DOCs, and PowerPoints
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/msword", // .doc
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+    "application/vnd.ms-powerpoint", // .ppt
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation", // .pptx
   ];
 
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF or Word files are allowed"), false);
+    cb(new Error("Only PDF, Word, and PowerPoint files are allowed!"), false);
   }
 };
 
