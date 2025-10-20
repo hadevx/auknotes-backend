@@ -53,7 +53,7 @@ const getCourses = async (req, res) => {
 
   // Fetch paginated categories
   const courses = await Course.find({ ...keyword })
-    .sort({ code: 1, isClosed: 1, createdAt: -1 }) // show open first, then newest
+    .sort({ isPaid: -1, code: 1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
