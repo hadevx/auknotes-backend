@@ -51,6 +51,12 @@ const getCourses = async (req, res) => {
   // Count total matching categories
   const count = await Course.countDocuments({ ...keyword });
 
+  // Fetch paginated categories
+  const courses = await Course.find({ ...keyword })
+    .sort({ code: 1, isClosed: 1, createdAt: -1 }) // show open first, then newest
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
   res.json({
     courses,
     page,
