@@ -86,16 +86,19 @@ router.get("/download/:id", protectUser, async (req, res) => {
   const resource = await Product.findById(id).populate("course");
   if (!resource) return res.status(404).json({ message: "Resource not found" });
 
-  let hasAccess = false;
+  let hasAccess = true; // default to true for free courses
 
   if (resource.course.isPaid) {
     const user = await User.findById(req.user._id).select("purchasedCourses");
     hasAccess = user.purchasedCourses.some((c) => c.toString() === resource.course._id.toString());
   }
 
-  // Check course & resource availability
-  if (resource.course.isClosed || !hasAccess) {
-    return res.status(403).json({ message: "This resource is not available yet." });
+  if (resource.course.isClosed) {
+    return res.status(403).json({ message: "This course is closed." });
+  }
+
+  if (!hasAccess) {
+    return res.status(403).json({ message: "You don’t have access to this paid course." });
   }
 
   // Serve file
