@@ -39,9 +39,8 @@ const loginUser = asyncHandler(async (req, res) => {
     phone: user.phone,
     avatar: user.avatar,
     isAdmin: user.isAdmin,
-    followers: user.followers,
-    following: user.following,
     isBlocked: user.isBlocked,
+    purchasedCourses: user.purchasedCourses,
     createdAt: user.createdAt,
   });
 });
@@ -166,18 +165,13 @@ const logoutAdmin = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id).select("-password");
 
   if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
-  res.status(200).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    isAdmin: user.isAdmin,
-  });
+  res.status(200).json(user);
 });
 
 // @desc    Update user profile
@@ -291,7 +285,10 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private/admin
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id)
+    .select("-password")
+    .populate("purchasedCourses", "name code"); // select only fields you need
+
   if (user) {
     res.status(200).json(user);
   } else {

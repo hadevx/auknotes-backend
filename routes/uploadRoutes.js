@@ -6,6 +6,8 @@ const router = express.Router();
 const sharp = require("sharp");
 const Course = require("../models/courseModel");
 const Product = require("../models/productModel");
+const User = require("../models/userModel");
+
 const { protectUser } = require("../middleware/authMiddleware");
 // Make sure uploads folder exists inside container
 const uploadPath = "/app/uploads";
@@ -84,8 +86,15 @@ router.get("/download/:id", protectUser, async (req, res) => {
   const resource = await Product.findById(id).populate("course");
   if (!resource) return res.status(404).json({ message: "Resource not found" });
 
+  let hasAccess = false;
+
+  if (resource.course.isPaid) {
+    const user = await User.findById(req.user._id).select("purchasedCourses");
+    hasAccess = user.purchasedCourses.some((c) => c.toString() === resource.course._id.toString());
+  }
+
   // Check course & resource availability
-  if (resource.course.isClosed) {
+  if (resource.course.isClosed || !hasAccess) {
     return res.status(403).json({ message: "This resource is not available yet." });
   }
 

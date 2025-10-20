@@ -86,9 +86,9 @@ const getCourseById = asyncHandler(async (req, res) => {
 
   res.status(200).json(course);
 });
-const getAllCourses = asyncHandler(async (req, res) => {
-  const courses = await Course.find({});
 
+const getAllCourses = asyncHandler(async (req, res) => {
+  const courses = await Course.find({}).sort({ code: 1 }); // 1 = ascending, -1 = descending
   res.status(200).json(courses);
 });
 
