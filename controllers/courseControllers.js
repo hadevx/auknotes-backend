@@ -22,7 +22,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 // Update
 const updateCourse = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, code, image, isFeatured, isClosed } = req.body;
+  const { name, code, image, isFeatured, isClosed, isPaid } = req.body;
 
   const course = await Course.findById(id);
   if (!course) {
@@ -35,6 +35,7 @@ const updateCourse = asyncHandler(async (req, res) => {
   if (image !== undefined) course.image = image;
   if (isFeatured !== undefined) course.isFeatured = isFeatured;
   if (isClosed !== undefined) course.isClosed = isClosed;
+  if (isPaid !== undefined) course.isPaid = isPaid;
 
   const updatedCourse = await course.save();
   res.json(updatedCourse);
@@ -49,12 +50,6 @@ const getCourses = async (req, res) => {
 
   // Count total matching categories
   const count = await Course.countDocuments({ ...keyword });
-
-  // Fetch paginated categories
-  const courses = await Course.find({ ...keyword })
-    .sort({ code: 1, isClosed: 1, createdAt: -1 }) // show open first, then newest
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
 
   res.json({
     courses,
