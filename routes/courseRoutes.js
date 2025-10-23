@@ -10,6 +10,7 @@ const {
   getFeaturedCourses,
   getCourseById,
   getAllCourses,
+  toggleLikeCourse,
 } = require("../controllers/courseControllers");
 
 router.post("/", protectUser, protectAdmin, createCourse);
@@ -24,5 +25,7 @@ router.delete("/:id", protectUser, protectAdmin, deleteCourse);
 router.put("/:id", protectUser, protectAdmin, updateCourse);
 
 router.get("/:id", getCourseById);
+
+router.put("/:id/like", protectUser, toggleLikeCourse);
 
 module.exports = router;

@@ -17,6 +17,7 @@ const courseSchema = new Schema(
       type: String,
       default: null,
     },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     isFeatured: {
       type: Boolean,
       default: false,

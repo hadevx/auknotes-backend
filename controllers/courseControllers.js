@@ -30,7 +30,7 @@ const updateCourse = asyncHandler(async (req, res) => {
   }
 
   // Update fields only if provided
-  if (name) course.name = name;
+  if (name !== undefined) course.name = name;
   if (code) course.code = code;
   if (image !== undefined) course.image = image;
   if (isFeatured !== undefined) course.isFeatured = isFeatured;
@@ -92,6 +92,29 @@ const getAllCourses = asyncHandler(async (req, res) => {
   res.status(200).json(courses);
 });
 
+const toggleLikeCourse = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  const course = await Course.findById(id);
+  if (!course) return res.status(404).json({ message: "course not found" });
+
+  const alreadyLiked = course.likes.includes(userId);
+
+  if (alreadyLiked) {
+    course.likes = course.likes.filter((u) => u.toString() !== userId.toString());
+  } else {
+    course.likes.push(userId);
+  }
+
+  await course.save();
+
+  res.status(200).json({
+    liked: !alreadyLiked,
+    likesCount: course.likes.length,
+  });
+});
+
 module.exports = {
   createCourse,
   deleteCourse,
@@ -100,4 +123,5 @@ module.exports = {
   getFeaturedCourses,
   getCourseById,
   getAllCourses,
+  toggleLikeCourse,
 };
