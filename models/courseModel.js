@@ -13,6 +13,10 @@ const courseSchema = new Schema(
       uppercase: true,
       trim: true,
     },
+    badge: {
+      type: String,
+      trim: true,
+    },
     image: {
       type: String,
       default: null,

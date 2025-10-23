@@ -22,7 +22,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
 // Update
 const updateCourse = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, code, image, isFeatured, isClosed, isPaid } = req.body;
+  const { name, code, badge, image, isFeatured, isClosed, isPaid } = req.body;
 
   const course = await Course.findById(id);
   if (!course) {
@@ -31,6 +31,7 @@ const updateCourse = asyncHandler(async (req, res) => {
 
   // Update fields only if provided
   if (name !== undefined) course.name = name;
+  if (badge !== undefined) course.badge = badge;
   if (code) course.code = code;
   if (image !== undefined) course.image = image;
   if (isFeatured !== undefined) course.isFeatured = isFeatured;
