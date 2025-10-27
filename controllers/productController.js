@@ -119,10 +119,16 @@ const getProductsByCourse = asyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+const getNumberOfProducts = asyncHandler(async (req, res) => {
+  const count = await Product.countDocuments();
+  res.status(200).json(count);
+});
+
 module.exports = {
   getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
   getProductsByCourse,
+  getNumberOfProducts,
 };
