@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const slugify = require("slugify");
 
 const courseSchema = new Schema(
   {
@@ -12,6 +13,11 @@ const courseSchema = new Schema(
       required: true,
       uppercase: true,
       trim: true,
+    },
+    slug: {
+      type: String,
+      unique: true,
+      index: true,
     },
     badge: {
       type: String,
@@ -43,6 +49,14 @@ const courseSchema = new Schema(
   },
   { timestamps: true }
 );
+
+// ✅ Automatically generate slug from course code
+courseSchema.pre("save", function (next) {
+  if (this.isModified("code") || !this.slug) {
+    this.slug = this.code.toLowerCase().replace(/\s+/g, "");
+  }
+  next();
+});
 
 const Course = mongoose.model("Course", courseSchema);
 module.exports = Course;

@@ -12,7 +12,6 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-
     file: {
       url: { type: String, required: true }, // Cloud storage URL (S3, Cloudinary, etc.)
       publicId: { type: String }, // If managed in Cloudinary/S3
@@ -21,7 +20,6 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-
     course: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -37,12 +35,14 @@ const productSchema = new Schema(
       type: Number,
       // required: true,
     },
-
+    isClosed: {
+      type: Boolean,
+      default: false,
+    },
     featured: {
       type: Boolean,
       default: false,
     },
-
     discountBy: {
       type: Number,
       default: 0, // 0.05 = 5%

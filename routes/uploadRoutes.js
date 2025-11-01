@@ -86,6 +86,10 @@ router.get("/download/:id", protectUser, async (req, res) => {
   const resource = await Product.findById(id).populate("course");
   if (!resource) return res.status(404).json({ message: "Resource not found" });
 
+  /*  if (resource.isClosed) {
+    return res.status(403).json({ message: "You have no access" });
+  } */
+
   let hasAccess = true; // default to true for free courses
 
   if (resource.course.isPaid) {

@@ -50,7 +50,7 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, course, type, file } = req.body;
+  const { name, isClosed, course, type, file } = req.body;
 
   const product = await Product.findById(req.params.id);
   if (!product) {
@@ -75,6 +75,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   product.name = name ?? product.name;
   product.course = course ?? product.course;
   product.type = type ?? product.type;
+  product.isClosed = isClosed ?? product.isClosed;
 
   const updatedProduct = await product.save();
   res.status(200).json(updatedProduct);
@@ -108,13 +109,8 @@ const getProductsByCourse = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Course not found" });
   }
 
-  /*  // 🚫 Check if the course is closed
-  if (course.isClosed && !req.user.isAdmin) {
-    return res.status(403).json({ message: "This course is not yet available." });
-  } */
-
   // ✅ Fetch products only if course is open
-  const products = await Product.find({ course: courseId }).sort({ createdAt: -1 });
+  const products = await Product.find({ course: courseId }).sort({ name: 1 }); // 1 for ascending (A → Z)
 
   res.status(200).json(products);
 });

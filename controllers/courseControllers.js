@@ -54,7 +54,7 @@ const getCourses = async (req, res) => {
 
   // Fetch paginated categories
   const courses = await Course.find({ ...keyword })
-    .sort({ isPaid: -1, code: 1 })
+    .sort({ code: 1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
@@ -72,18 +72,12 @@ const getFeaturedCourses = asyncHandler(async (req, res) => {
 });
 
 const getCourseById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  const course = await Course.findById(id);
+  const course = await Course.findById(req.params.id);
 
   if (!course) {
     res.status(404);
     throw new Error("Course not found");
   }
-  /*   // 🚫 Prevent access if closed
-  if (course.isClosed) {
-    return res.status(403).json({ message: "This course is not yet available." });
-  } */
 
   res.status(200).json(course);
 });
