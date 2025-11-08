@@ -11,6 +11,10 @@ const storeSchema = new mongoose.Schema(
       type: String,
       deafult: "",
     },
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );

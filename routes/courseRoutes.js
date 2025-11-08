@@ -11,6 +11,7 @@ const {
   getCourseById,
   getAllCourses,
   toggleLikeCourse,
+  purchaseAllCourses,
 } = require("../controllers/courseControllers");
 
 router.post("/", protectUser, protectAdmin, createCourse);
@@ -18,7 +19,10 @@ router.post("/", protectUser, protectAdmin, createCourse);
 router.get("/featured", getFeaturedCourses);
 
 router.get("/", getCourses);
+
 router.get("/all", getAllCourses);
+
+router.post("/purchase-all", protectUser, purchaseAllCourses);
 
 router.delete("/:id", protectUser, protectAdmin, deleteCourse);
 

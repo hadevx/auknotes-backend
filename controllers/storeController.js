@@ -2,11 +2,12 @@ const asyncHandler = require("../middleware/asyncHandler");
 const Store = require("../models/storeModel");
 
 const updateStoreStatus = asyncHandler(async (req, res) => {
-  const { status, banner } = req.body;
+  const { status, banner, price } = req.body;
 
   const store = await Store.findOne({});
   if (store) {
     store.status = status || store.status;
+    store.price = price;
     store.banner = banner;
   }
 

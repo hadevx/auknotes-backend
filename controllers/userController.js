@@ -83,7 +83,13 @@ const loginAdmin = asyncHandler(async (req, res) => {
     isAdmin: user.isAdmin,
   });
 });
+const getLatestUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, "name username")
+    .sort({ createdAt: -1 }) // newest first
+    .limit(20);
 
+  res.status(200).json(users);
+});
 // @desc    Register user
 // @route   POST /api/users
 // @access  public
@@ -212,43 +218,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-// @desc    Update user address
-// @route   PUT /api/users/address
-// @access  Private
-const updateAddress = asyncHandler(async (req, res) => {
-  const { governorate, city, block, street, house } = req.body;
 
-  const address = await Address.findOne({ user: req.user._id });
-
-  if (address) {
-    address.governorate = governorate || address.governorate;
-    address.city = city || address.city;
-    address.block = block || address.block;
-    address.street = street || address.street;
-    address.house = house || address.house;
-
-    const updatedAddress = await address.save();
-
-    res.status(200).json(updatedAddress);
-  } else {
-    res.status(404);
-    throw new Error("Address not found");
-  }
-});
-
-// @desc    Get users
-// @route   GET /api/users
-// @access  Private/admin
-/* const getUsers = asyncHandler(async (req, res) => {
-  const totalUsers = await User.find({}).select("-password");
-
-  if (!totalUsers || totalUsers.length === 0) {
-    res.status(404);
-    throw new Error("No users found");
-  }
-
-  res.status(200).json(totalUsers);
-}); */
 const getUsers = asyncHandler(async (req, res) => {
   const pageSize = 20; // number of users per page
   const page = Number(req.query.pageNumber) || 1;
@@ -295,6 +265,13 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
+});
+const getPurchasedUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({
+    purchasedCourses: { $exists: true, $not: { $size: 0 } },
+  });
+
+  res.status(200).json(users);
 });
 
 // @desc    Delete user
@@ -390,42 +367,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-const createAddress = asyncHandler(async (req, res) => {
-  const { governorate, city, block, street, house } = req.body;
-
-  const newAddress = await Address.create({
-    user: req.user._id,
-    governorate,
-    city,
-    block,
-    street,
-    house,
-  });
-
-  res.status(201).json(newAddress);
-});
-
-// @desc    Get user address
-// @route   GET /api/users/address/:userId
-// @access  Private
-const getAddress = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-
-  if (!userId) {
-    res.status(400);
-    throw new Error("User ID is required");
-  }
-
-  const address = await Address.findOne({ user: userId });
-
-  if (!address) {
-    res.status(404);
-    throw new Error("Address not found");
-  }
-
-  res.status(200).json(address);
-});
-
 const forgetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -487,73 +428,6 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get all governorates with user count
-// @route   GET /api/users/governorates
-// @access  Private/Admin
-const getGovernorates = asyncHandler(async (req, res) => {
-  // Count total users
-  const totalUsers = await User.countDocuments();
-
-  // Aggregate addresses to count users per governorate
-  const governorates = await Address.aggregate([
-    {
-      $group: {
-        _id: "$governorate",
-        count: { $sum: 1 },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        governorate: "$_id",
-        count: 1,
-      },
-    },
-  ]);
-
-  res.status(200).json({
-    totalUsers, // total number of users
-    governorates, // count per governorate
-  });
-});
-
-const toggleFollow = asyncHandler(async (req, res) => {
-  const targetUserId = req.params.id;
-  const currentUserId = req.user._id; // assuming you have auth middleware
-
-  if (targetUserId.toString() === currentUserId.toString()) {
-    res.status(400);
-    throw new Error("You cannot follow yourself");
-  }
-
-  const targetUser = await User.findById(targetUserId);
-  const currentUser = await User.findById(currentUserId);
-
-  if (!targetUser || !currentUser) {
-    res.status(404);
-    throw new Error("User not found");
-  }
-
-  // Check if already following
-  const isFollowing = currentUser.following.includes(targetUserId);
-
-  if (isFollowing) {
-    // Unfollow
-    currentUser.following.pull(targetUserId);
-    targetUser.followers.pull(currentUserId);
-    await currentUser.save();
-    await targetUser.save();
-    res.json({ message: `You have unfollowed ${targetUser.username}` });
-  } else {
-    // Follow
-    currentUser.following.push(targetUserId);
-    targetUser.followers.push(currentUserId);
-    await currentUser.save();
-    await targetUser.save();
-    res.json({ message: `You are now following ${targetUser.username}` });
-  }
-});
-
 module.exports = {
   loginUser,
   registerUser,
@@ -568,16 +442,14 @@ module.exports = {
   getUserById,
   deleteUser,
   updateUser,
-  createAddress,
-  getAddress,
-  updateAddress,
+  getLatestUsers,
   loginAdmin,
   forgetPassword,
   resetPassword,
   logoutAdmin,
-  getGovernorates,
+
   toggleBlockUser,
   getBlockStatus,
-  toggleFollow,
+
   setVerified,
 };

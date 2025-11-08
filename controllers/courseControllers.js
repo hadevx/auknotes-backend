@@ -1,5 +1,6 @@
 const asyncHandler = require("../middleware/asyncHandler");
 const Course = require("../models/courseModel");
+const User = require("../models/userModel");
 
 const createCourse = asyncHandler(async (req, res) => {
   const { name, code, image } = req.body;
@@ -110,6 +111,42 @@ const toggleLikeCourse = asyncHandler(async (req, res) => {
   });
 });
 
+// ✅ Add all courses to the user's purchasedCourses after successful PayPal payment
+const purchaseAllCourses = asyncHandler(async (req, res) => {
+  const { orderId, userId } = req.body;
+
+  // Validate input
+  if (!userId || !orderId) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  // Find user
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Fetch all courses (you can filter if needed, e.g. only paid ones)
+  const allCourses = await Course.find({}, "_id");
+
+  // Merge new courses with existing ones without duplicates
+  const existingCourses = user.purchasedCourses.map((id) => id.toString());
+  const newCourses = allCourses
+    .map((c) => c._id.toString())
+    .filter((id) => !existingCourses.includes(id));
+
+  user.purchasedCourses.push(...newCourses);
+
+  await user.save();
+
+  console.log(`✅ User ${user.name} purchased all courses via PayPal order ${orderId}`);
+
+  res.status(200).json({
+    message: "All courses added to purchasedCourses",
+    totalPurchased: user.purchasedCourses.length,
+  });
+});
+
 module.exports = {
   createCourse,
   deleteCourse,
@@ -119,4 +156,5 @@ module.exports = {
   getCourseById,
   getAllCourses,
   toggleLikeCourse,
+  purchaseAllCourses,
 };

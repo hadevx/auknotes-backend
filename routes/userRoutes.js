@@ -13,16 +13,14 @@ const {
   deleteUser,
   getUserById,
   updateUser,
-  createAddress,
-  getAddress,
-  updateAddress,
+
   loginAdmin,
   forgetPassword,
   resetPassword,
-  getGovernorates,
+  getLatestUsers,
   toggleBlockUser,
   getBlockStatus,
-  toggleFollow,
+
   setVerified,
 } = require("../controllers/userController");
 const {
@@ -36,16 +34,17 @@ const {
 // Client routes
 router.post("/login", loginValidation, loginUser);
 router.post("/register", registerLimiter, registerValidation, registerUser);
-router.get("/address/:userId", protectUser, getAddress);
-router.post("/address", protectUser, addressValidation, createAddress);
-router.put("/address", protectUser, updateAddress);
+// router.get("/address/:userId", protectUser, getAddress);
+// router.post("/address", protectUser, addressValidation, createAddress);
+// router.put("/address", protectUser, updateAddress);
 router.get("/profile", protectUser, getUserProfile);
+router.get("/latest", getLatestUsers);
 router.put("/profile", protectUser, updateUserProfile);
 router.post("/logout", logoutUser);
 
 // Admin routes
 router.post("/admin", loginLimiter, loginValidation, loginAdmin);
-router.get("/governorates", getGovernorates);
+// router.get("/governorates", getGovernorates);
 router.get("/", protectUser, protectAdmin, getUsers);
 router.put("/:id", protectUser, updateUser);
 router.delete("/:id", protectUser, protectAdmin, deleteUser);
@@ -59,7 +58,7 @@ router.post("/admin/logout", logoutUser);
 router.post("/forget-password", forgetPassword);
 router.post("/reset-password/:token", resetPassword);
 // Follow/unfollow a user
-router.post("/:id/follow", protectUser, toggleFollow);
+// router.post("/:id/follow", protectUser, toggleFollow);
 
 router.put("/add-course/:userId", protectUser, protectAdmin, async (req, res) => {
   try {
