@@ -44,7 +44,7 @@ const updateCourse = asyncHandler(async (req, res) => {
 });
 
 const getCourses = async (req, res) => {
-  const pageSize = 20; // categories per page
+  const pageSize = 50; // categories per page
   const page = Number(req.query.pageNumber) || 1;
 
   // Optional search

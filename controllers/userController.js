@@ -220,7 +220,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const pageSize = 20; // number of users per page
+  const pageSize = 50; // number of users per page
   const page = Number(req.query.pageNumber) || 1;
 
   // Optional search by name or email
