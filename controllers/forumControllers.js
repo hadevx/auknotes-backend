@@ -123,17 +123,15 @@ const getTopicById = asyncHandler(async (req, res) => {
 // Create a topic
 // =======================
 const createTopic = asyncHandler(async (req, res) => {
-  const { title, description, category } = req.body;
+  const { description, category } = req.body;
 
   if (req.user.isBlocked) {
     return res.status(403).json({ message: "You're blocked. Please contact support." });
   }
-  if (!title || !description || !category)
-    return res.status(400).json({ message: "Please add all fields" });
+  if (!description || !category) return res.status(400).json({ message: "Please add all fields" });
 
   const topic = await Topic.create({
     author: req.user._id,
-    title,
     description,
     category,
   });
@@ -146,7 +144,7 @@ const createTopic = asyncHandler(async (req, res) => {
 // =======================
 const updateTopic = asyncHandler(async (req, res) => {
   const { topicId } = req.params;
-  const { title, description, category } = req.body;
+  const { description, category } = req.body;
 
   if (req.user.isBlocked) {
     return res.status(403).json({ message: "You're blocked. Please contact support." });
@@ -157,7 +155,7 @@ const updateTopic = asyncHandler(async (req, res) => {
   if (topic.author.toString() !== req.user._id.toString())
     return res.status(403).json({ message: "Not authorized" });
 
-  topic.title = title || topic.title;
+  // topic.title = title || topic.title;
   topic.description = description || topic.description;
   topic.category = category || topic.category;
 
