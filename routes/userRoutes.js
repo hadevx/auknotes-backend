@@ -33,7 +33,7 @@ const {
 
 // Client routes
 router.post("/login", loginValidation, loginUser);
-router.post("/register", registerLimiter, registerValidation, registerUser);
+router.post("/register", registerValidation, registerUser);
 // router.get("/address/:userId", protectUser, getAddress);
 // router.post("/address", protectUser, addressValidation, createAddress);
 // router.put("/address", protectUser, updateAddress);
