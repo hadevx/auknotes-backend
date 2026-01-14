@@ -12,6 +12,7 @@ const {
   getAllCourses,
   toggleLikeCourse,
   purchaseAllCourses,
+  removeAllCoursesFromUser,
 } = require("../controllers/courseControllers");
 
 router.post("/", protectUser, protectAdmin, createCourse);
@@ -23,6 +24,7 @@ router.get("/", getCourses);
 router.get("/all", getAllCourses);
 
 router.post("/purchase-all", protectUser, purchaseAllCourses);
+// router.post("/remove-all-courses", protectUser, protectAdmin, removeAllCoursesFromUser);
 
 router.delete("/:id", protectUser, protectAdmin, deleteCourse);
 

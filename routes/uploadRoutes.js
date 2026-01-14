@@ -83,6 +83,14 @@ const upload = multer({ storage, fileFilter });
 router.get("/download/:id", protectUser, async (req, res) => {
   const { id } = req.params;
 
+  // 🔒 Blocked user check (early exit)
+  const currentUser = await User.findById(req.user._id).select("isBlocked");
+  if (currentUser.isBlocked) {
+    return res.status(403).json({
+      message: "Your account is blocked. Access denied.",
+    });
+  }
+
   const resource = await Product.findById(id).populate("course");
   if (!resource) return res.status(404).json({ message: "Resource not found" });
 

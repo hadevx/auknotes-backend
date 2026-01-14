@@ -13,7 +13,6 @@ const {
   deleteUser,
   getUserById,
   updateUser,
-
   loginAdmin,
   forgetPassword,
   resetPassword,
@@ -77,6 +76,34 @@ router.put("/add-course/:userId", protectUser, protectAdmin, async (req, res) =>
     await user.save();
 
     res.status(200).json({ message: "Course added successfully", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/remove-course/:userId", protectUser, protectAdmin, async (req, res) => {
+  try {
+    const { courseId } = req.body;
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Check if course exists
+    const courseIndex = user.purchasedCourses.findIndex(
+      (c) => c.toString() === courseId.toString()
+    );
+
+    if (courseIndex === -1) {
+      return res.status(400).json({ message: "Course not found in user purchases" });
+    }
+
+    // Remove course
+    user.purchasedCourses.splice(courseIndex, 1);
+    await user.save();
+
+    res.status(200).json({ message: "Course removed successfully", user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

@@ -147,6 +147,29 @@ const purchaseAllCourses = asyncHandler(async (req, res) => {
   });
 });
 
+const removeAllCoursesFromUser = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.purchasedCourses = [];
+  await user.save();
+
+  console.log(`❌ All courses removed from user ${user.name}`);
+
+  res.status(200).json({
+    message: "All courses removed from user",
+    totalPurchased: 0,
+  });
+});
+
 module.exports = {
   createCourse,
   deleteCourse,
@@ -157,4 +180,5 @@ module.exports = {
   getAllCourses,
   toggleLikeCourse,
   purchaseAllCourses,
+  removeAllCoursesFromUser,
 };
